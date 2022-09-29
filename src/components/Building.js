@@ -70,44 +70,8 @@ const Building = () => {
         </div>
       </div>
       <br />
-
-
-      {/* <div className='row'>
-        <div className='col-2'></div>
-        <div className="col-8">
-          {
-            rooms.map(
-              room => (
-                <div className="card text-center mb-3">
-                  <div className="card-body row">
-                    <div className='col-4'>
-                      <h5 className="card-title">Room No. {room.id}</h5>
-                    </div>
-                    <div className='col-4'>
-                      <p className="card-text">Rent: Rs. {room.rentPerDay}</p>
-                    </div>
-                    <div className='col-4'>
-                      <Link className="btn btn-outline-primary" to={`/room/${room.id}`}>View Beds</Link>
-                    </div>
-                  </div>
-                </div>
-
-                // <div className="card shadow" style={{width : "400px"}}>
-                //   <div className="card-body">
-                //     <h5 className="card-title">&nbsp;&nbsp; Room No. 0{room.id}</h5>
-                //     <p className="card-text">&nbsp;&nbsp;&nbsp;&nbsp;Rent: Rs.{JSON.stringify(room.rentPerDay)} /- only</p>
-                //     <div className="row" id="btnroom">
-                //       <a href="#" className="btn btn-primary shadow"><Link className="btn" to={`/room/${room.id}`}>View Beds</Link></a>
-                //     </div>
-                //   </div>
-                // </div>
-              )
-            )
-          }
-        </div>
-      </div> */}
       <div className='container-fluid'>
-      <div className='row justify-content-center align-items-center wrap' style={{ "padding": "3rem" }}>
+      <div className='row justify-content-center align-items-center wrap' style={{ "padding": "1rem" }}>
       {
             rooms.map(
               room => <RoomCard room={room}/> )}

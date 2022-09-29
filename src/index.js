@@ -7,9 +7,6 @@ import App from './App';
 import { AuthProvider } from './context/AuthProvider';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-  import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-  import { faCoffee } from '@fortawesome/free-solid-svg-icons'
-//https://mui.com/material-ui/getting-started/templates/
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>

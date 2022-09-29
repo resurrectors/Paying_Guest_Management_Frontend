@@ -3,10 +3,9 @@ import React, { useEffect, useState } from 'react'
 import useAuth from "../hooks/useAuth"
 import axios from '../api/axios';
 import { profileSchema } from '../schemas/profileSchemaFile';
-import { ActionTypes } from '@mui/base';
 
 export default function UpdateProfile() {
-    const { auth, setAuth } = useAuth();
+    const { auth } = useAuth();
     const EMAIL = auth?.email;
     const [profilePhoto, setProfilePhoto] = useState({ imgFile: null });
     const [vals, setVals] = useState({});
@@ -44,22 +43,18 @@ export default function UpdateProfile() {
                     'Authorization': `Bearer ${auth.accessToken}`,
                     'Content-Type': 'application/json'
                 },
-                // withCredentials: true
             });
         return response.data;
     };
 
-    // const getImageIds = async () => {
-    //     const response = await axios.get(`/image/user/${user?.id}`, {
-    //         headers: {
-    //             'Authorization': `Bearer ${auth.accessToken}`,
-    //             'Content-Type': 'application/json'
-    //         },
-    //         // withCredentials: true
-    //     });
-    //     return response.data;
-    // };
-
+    const getUserDetailsu = async () => {
+        const user = await getUserDetails();
+        if (user) {
+            console.log(user);
+            setUser(user);
+        }
+        return user;
+    };
 
     useEffect(() => {
         const putUser = async () => {
@@ -69,17 +64,12 @@ export default function UpdateProfile() {
                 setUser(user);
             }
         };
-        const getUserDetailsu = async () => {
-            const user = await getUserDetails();
-            if (user) {
-                console.log(user);
-                setUser(user);
-            }
-        };
+
         if (vals?.countryCode) {
             putUser();
         } else {
-            getUserDetailsu();
+            console.log("********");
+            console.log(getUserDetailsu());
         }
     }, [vals]);
 
@@ -113,7 +103,6 @@ export default function UpdateProfile() {
                         'Authorization': `Bearer ${auth.accessToken}`,
                         'Content-Type': 'application/json'
                     },
-                    // withCredentials: true
                 });
             show();
             return response.data;
@@ -131,10 +120,23 @@ export default function UpdateProfile() {
         }, 3000);
     }
 
+
+    const alues = {
+        "countryCode": user?.countryCode,
+        "contactNo": user?.contactNo,
+        "addrl1": user?.userAddr?.addrl1,
+        "addrl2": user?.userAddr?.addrl2,
+        "city": user?.userAddr?.city,
+        "state": user?.userAddr?.state,
+        "country": user?.userAddr?.country,
+        "zipCode": user?.userAddr?.zipCode
+    };
+
     const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
         useFormik({
-            initialValues: initialValues,
+            initialValues: alues?.addrl1 ? alues : initialValues,
             validationSchema: profileSchema,
+            enableReinitialize: true,
             onSubmit: (values) => {
                 setVals(values);
                 show();
@@ -146,11 +148,10 @@ export default function UpdateProfile() {
         <div className='row'>
             <div className='col-3'></div>
             <div className='col-6 my-3'>
-                
+
                 <div>
                     <h3 className="display-3 text-center">Profile</h3>
                 </div>
-
                 <form onSubmit={handleSubmit}>
                     <h3>User Details :</h3>
                     <hr />

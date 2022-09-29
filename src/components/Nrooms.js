@@ -61,7 +61,7 @@ export default function Nrooms() {
 
     return (
         <div className='container-fluid'>
-            <div className='row'>
+            <div className='row my-3'>
                 <div className='col-3'></div>
                 <div className='col-6'>
                     <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">

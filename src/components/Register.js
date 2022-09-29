@@ -185,7 +185,7 @@ export default function Register() {
 						{successMessage()}
 
 					</div>
-					<div className='text-muted' >
+					<div>
 						<input type="checkbox" onChange={handleRoles} name="owner" id="owner" /> I want to register as Owner
 					</div>
 
