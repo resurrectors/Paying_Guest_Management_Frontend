@@ -6,7 +6,7 @@ export default function RoomCard(props) {
 
     const [imageIds, setImageIds] = useState([]);
     const room = props.room;
-
+    const no = props.no
     const getImageIds = async () => {
         const response = await axios.get(`/image/room/${room.id}`)
         return response.data
@@ -37,7 +37,7 @@ export default function RoomCard(props) {
                     <a href="#" className="btn btn-primary">Go somewhere</a> */}
                     <div className="d-flex flex-column mb-4">
 
-                        <h4 className="card-title">Room No. {room.id}</h4>
+                        <h4 className="card-title">Room No. {no}</h4>
 
                         <p className="card-text">Rent: Rs. {room.rentPerDay} </p>
                         <hr/>

@@ -8,6 +8,12 @@ const Building = () => {
   const [rooms, setRooms] = useState([]);
   const [bimages, setBimages] = useState([]);
   const BACKEND = 'http://localhost:8080/image/id'
+  var no = 0;
+
+  function getNo(){
+    no = no + 1;
+    return no
+  }
 
   const getImageIds = async () => {
     const response = await axios.get(`/image/building/${buildingId}`);
@@ -74,7 +80,7 @@ const Building = () => {
       <div className='row justify-content-center align-items-center wrap' style={{ "padding": "1rem" }}>
       {
             rooms.map(
-              room => <RoomCard room={room}/> )}
+              room => <RoomCard no={getNo()} room={room}/> )}
       </div>
     </div>
     </div>
