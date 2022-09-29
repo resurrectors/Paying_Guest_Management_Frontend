@@ -5,6 +5,19 @@ import axios from '../api/axios';
 import { useLocation } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
+function loadScript(src) {
+  return new Promise((resolve) => {
+    const script = document.createElement('script')
+    script.src = src
+    script.onload = () => {
+      resolve(true)
+    }
+    script.onerror = () => {
+      resolve(false)
+    }
+    document.body.appendChild(script)
+  })
+}
 
 const Book = (props) => {
   const { bedId } = useParams();
@@ -78,17 +91,8 @@ const Book = (props) => {
 
   }, [endDate, startDate, totalDays])
 
-
-
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const addToBackend = async () => {
     try {
-
-
-      
-
-
       const response = await axios.post(`/booking/bed/${bedId}`,
         JSON.stringify({ startDate, endDate, rent, transactionDate }),
         {
@@ -100,10 +104,7 @@ const Book = (props) => {
         }
       );
       console.log(JSON.stringify(response?.data));
-      setSubmitted('Booking Successful! You are being redirected to Home page...')
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
+      setSubmitted('Booking in progress proceed with payment')
     } catch (err) {
       if (!err?.response) {
         setError('No Server Response');
@@ -119,6 +120,57 @@ const Book = (props) => {
       }
 
     }
+  }
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    displayRazorpay().then(() => {
+      addToBackend();
+    })
+
+
+
+  }
+  async function displayRazorpay() {
+    const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+
+    if (!res) {
+      alert('Razorpay SDK failed to load. Are you online?')
+      return
+    }
+
+    const data = await fetch('http://localhost:1337/razorpay', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: rent })
+    }).then((t) =>
+      t.json()
+    )
+
+    console.log(data)
+
+    const options = {
+      key: "rzp_test_3sX0U2MJqYc0JJ",
+      currency: "INR",
+      amount: 100 * rent,
+      order_id: data.id,
+      name: 'PGHub',
+      description: 'Thank you for using PGHub',
+      image: 'http://localhost:1337/logo.svg',
+      handler: function (response) {
+
+        alert("Your payment id is "+response.razorpay_payment_id)
+        navigate("/")
+        // addToBackend();
+        // alert(response.razorpay_order_id)
+        // alert(response.razorpay_signature)
+      },
+      prefill: {
+        email: localStorage.getItem("email")
+      }
+    }
+    const paymentObject = new window.Razorpay(options)
+    paymentObject.open()
   }
   return (
     <div className="container-fluid" style={{ 'height': '98vh' }}>
@@ -143,13 +195,13 @@ const Book = (props) => {
 
           <label className="label">Rent per Day: Rs. </label>
           <input className="input form-control"
-            type="text" value={rentPerDay} disabled/>
+            type="text" value={rentPerDay} disabled />
           <label className="label">Total Days  : </label>
           <input className="input form-control"
-            type="text"  value={totalDays} disabled />
+            type="text" value={totalDays} disabled />
           <label className="label">Total amount for {totalDays} Days : </label>
           <input className="input form-control mb-3"
-            type="text"  value={rentPerDay * totalDays} disabled />
+            type="text" value={rentPerDay * totalDays} disabled />
 
 
 
@@ -160,16 +212,10 @@ const Book = (props) => {
             {errorMessage()}
             {successMessage()}
           </div>
-
-
-
-
-
-
-
           <br />
           <div className='row justify-content-center '>
             <button className="btn btn-primary   text-light" style={{ width: '10rem' }} onClick={handleSubmit} type="submit">
+              {/* <button className="btn btn-primary   text-light" style={{ width: '10rem' }} onClick={displayRazorpay} type="submit"> */}
               Pay Rs. {rentPerDay * totalDays} Now
             </button>
           </div>

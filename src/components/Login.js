@@ -176,9 +176,10 @@ export default function Login() {
                   
                   <Link to="/reset_password" class="text-body">Forgot password?</Link>
                 </div>
-                {error!==false ? <div class="alert alert-danger" role="alert">
-                Invalid Credentials
-                  </div> :null}
+                <div className="messages text-danger mt-3">
+                  {errorMessage()}
+                  {successMessage()}
+                </div>
                 <div class="text-center text-lg-start mt-4 pt-2">
                   <button type="button" class="btn btn-primary btn-lg"
                     onClick={handleSubmit} ><FontAwesomeIcon icon={ faLockOpen}/> Login</button>
