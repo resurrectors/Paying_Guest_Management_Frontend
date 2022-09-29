@@ -14,13 +14,13 @@ const Book = (props) => {
   const [transactionDate, setTransactionDate] = useState(new Date());
   const [totalDays, setTotalDays] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-	const [error, setError] = useState(false);
-  const rentPerDay=localStorage.getItem('rent');
+  const [error, setError] = useState(false);
+  const rentPerDay = localStorage.getItem('rent');
   // const rentPerDay=10;
   const setAuth = useAuth();
   const navigate = useNavigate();
   const auth = setAuth.auth;
-  
+
   const successMessage = () => {
     return (
       <div className="success text-success" style={{ display: submitted ? '' : 'none', }}>
@@ -37,60 +37,60 @@ const Book = (props) => {
       </div>
     );
   };
-  
-  
-  const handleStartDate=(e)=>{
+
+
+  const handleStartDate = (e) => {
     setStartDate(new Date(e.target.value));
-    
-    
+
+
   }
- 
-  const handleEndDate=(e)=>{
+
+  const handleEndDate = (e) => {
     setError(null);
     const date = new Date(e.target.value);
     if (startDate === 'undefined') {
       setError("Please select start date first!")
-    }else if(date < startDate){
+    } else if (date < startDate) {
       setError("End date cannot be earlier that start date!")
-    }else{
+    } else {
       setEndDate(date);
     }
-    
+
   }
-  const handleTotalDays=(e)=>{
-    
+  const handleTotalDays = (e) => {
+
   }
   useEffect(async () => {
     try {
-     
-      const days = Math.ceil((endDate-startDate) / (1000 * 60 * 60 * 24));
-    
-    if (isNaN(days)) {
-      setTotalDays(0);
-    }else{
-      setTotalDays(days);
-    }
+
+      const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+      if (isNaN(days)) {
+        setTotalDays(0);
+      } else {
+        setTotalDays(days);
+      }
     } catch (error) {
       console.log("Error!!!!!!!!!")
     }
-   
-    setRent(rentPerDay*totalDays);
-      
+
+    setRent(rentPerDay * totalDays);
+
   }, [endDate, startDate, totalDays])
-  
- 
+
+
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+
       
-      
-      // setRent(rentPerDay*totalDays);
-      
-      
+
+
       const response = await axios.post(`/booking/bed/${bedId}`,
-        JSON.stringify({ startDate  , endDate, rent, transactionDate }),
+        JSON.stringify({ startDate, endDate, rent, transactionDate }),
         {
           headers: {
             'Authorization': `Bearer ${auth.accessToken}`,
@@ -111,13 +111,13 @@ const Book = (props) => {
         setError('End date must be in the future!');
       } else if (err.response?.status === 401) {
         setError('Please login to Book!');
-      }  else if(err?.response?.status ===400) {
+      } else if (err?.response?.status === 400) {
         setError('Booking Failed, bed is already booked on these dates!');
       }
-       else  {
+      else {
         setError('Unknown Error occured please try again!');
       }
-      
+
     }
   }
   return (
@@ -134,26 +134,25 @@ const Book = (props) => {
           {/* Labels and inputs for form data */}
           <label className="label">Start Date</label>
           <input onChange={handleStartDate} className="input form-control"
-             type="date" required />
+            type="date" required />
 
 
           <label className="label">End Date</label>
           <input onChange={handleEndDate} className="input form-control"
-             type="date" required />
+            type="date" required />
+
+          <label className="label">Rent per Day: Rs. </label>
+          <input className="input form-control"
+            type="text" value={rentPerDay} disabled/>
+          <label className="label">Total Days  : </label>
+          <input className="input form-control"
+            type="text"  value={totalDays} disabled />
+          <label className="label">Total amount for {totalDays} Days : </label>
+          <input className="input form-control mb-3"
+            type="text"  value={rentPerDay * totalDays} disabled />
 
 
-          <div>
-            Rent per Day: Rs. {rentPerDay}
-          </div>
-          <div>
-            Total Days  : {totalDays}
-          </div>
-          <div>
-            Total amount for {totalDays} Days : {rentPerDay*totalDays}
-          </div>
 
-
-          
 
 
           {/* Calling to the methods */}
@@ -161,7 +160,7 @@ const Book = (props) => {
             {errorMessage()}
             {successMessage()}
           </div>
-          
+
 
 
 
@@ -170,8 +169,8 @@ const Book = (props) => {
 
           <br />
           <div className='row justify-content-center '>
-            <button className="btn btn-primary   text-light" style={{width:'10rem'}} onClick={handleSubmit} type="submit">
-              Pay Rs. {rentPerDay*totalDays} Now
+            <button className="btn btn-primary   text-light" style={{ width: '10rem' }} onClick={handleSubmit} type="submit">
+              Pay Rs. {rentPerDay * totalDays} Now
             </button>
           </div>
         </form>
